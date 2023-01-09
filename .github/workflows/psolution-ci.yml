@@ -21,7 +21,7 @@ env:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  ci:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -36,3 +36,22 @@ jobs:
           user-name: ${{ env.username }}
           # Power Platform password, required if authenticating with username. Do NOT checkin password, instead create a secret and reference it here with: see: https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets#using-encrypted-secrets-in-a-workflow
           password-secret: ${{ secrets.pwd }}
+      
+      - name: Export Solution
+        uses: microsoft/powerplatform-actions/export-solution@v0
+        with:
+          environment-url: ${{ env.source-env-url }}
+          user-name: ${{ env.username }}
+          password-secret: ${{ secrets.pwd }}
+          solution-name: DemoSolution
+          solution-output-file: 'demoSolution.zip'
+          working-directory: 'out'
+
+      - name: Unpack Solution
+        uses: microsoft/powerplatform-actions/unpack-solution@v0
+        with:
+          solution-file: 'out/demoSolution.zip'
+          solution-folder: 'out/solutions/demoSolution'
+          solution-type: 'Unmanaged'
+          overwrite-files: true
+
