@@ -12,6 +12,11 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+  
+env:
+  username: admin@CRM929744.onmicrosoft.com
+  source-env-url: https://org792134b3.crm4.dynamics.com
+  dest-env-url: https://orgd910365a.crm4.dynamics.com
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -22,15 +27,12 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+      - name: powerplatform-actions
+        uses: microsoft/powerplatform-actions@v0.10.2
+        with:
+          # URL of Power Platform environment to connect with; e.g. "https://test-env.crm.dynamics.com"
+          environment-url: ${{ env.source-env-url }}
+          # Power Platform user name to authenticate with, e.g. myname@my-org.onmicrosoft.com. Setting this input makes user-name and password required; specifying alternate "app-id" credential set of inputs will result in an error.
+          user-name: ${{ env.username }}
+          # Power Platform password, required if authenticating with username. Do NOT checkin password, instead create a secret and reference it here with: see: https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets#using-encrypted-secrets-in-a-workflow
+          password-secret: ${{ secrets.pwd }}
