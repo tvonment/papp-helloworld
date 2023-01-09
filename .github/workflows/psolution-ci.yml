@@ -14,7 +14,8 @@ on:
   workflow_dispatch:
   
 env:
-  username: admin@CRM929744.onmicrosoft.com
+  app-id: 6a5754ee-a779-42e0-b97f-7e7e4ca3369d
+  tenant-id: 1ba735a2-4eb2-4f59-9e8d-ebc69a922c0a
   source-env-url: https://org792134b3.crm4.dynamics.com
   dest-env-url: https://orgd910365a.crm4.dynamics.com
 
@@ -31,8 +32,9 @@ jobs:
         uses: microsoft/powerplatform-actions/export-solution@v0
         with:
           environment-url: ${{ env.source-env-url }}
-          user-name: ${{ env.username }}
-          password-secret: ${{ secrets.pwd }}
+          app-id: ${{ env.app-id }}
+          client-secret: ${{ secrets.APP_SECRET }}
+          tenant-id: ${{ env.tenant-id }}
           solution-name: DemoSolution
           solution-output-file: 'demoSolution.zip'
           working-directory: 'out'
