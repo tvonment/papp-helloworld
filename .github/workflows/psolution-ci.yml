@@ -28,6 +28,9 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - name: powerplatform-actions
+        uses: microsoft/powerplatform-actions@v0.10.2
+
       - name: Export Solution
         uses: microsoft/powerplatform-actions/export-solution@v0
         with:
