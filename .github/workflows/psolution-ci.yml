@@ -1,52 +1,78 @@
-# This is a basic workflow to help you get started with Actions
+name: export-and-branch-solution
+# Export solution from DEV environment
+#  unpack it and prepare, commit and push a git branch with the changes
 
-name: CI Power Platform Solution
-
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-  
+    inputs:
+      # Change this value
+      solution_name:
+        description: 'name of the solution to worked on from Power Platform'
+        required: true
+        default: DemoSolution
+       #Do Not change these values
+      solution_exported_folder:
+        description: 'folder name for staging the exported solution *do not change*'
+        required: true
+        default: out/exported/
+      solution_folder:
+        description: 'staging the unpacked solution folder before check-in *do not change*'
+        required: true
+        default: out/solutions/
+      solution_target_folder: 
+       description: 'folder name to be created and checked in *do not change*'
+       required: true
+       default: solutions/
 env:
-  CLIENT_ID: 6a5754ee-a779-42e0-b97f-7e7e4ca3369d
-  TENANT_ID: 1ba735a2-4eb2-4f59-9e8d-ebc69a922c0a
-  ENVIRONMENT_URL: https://org792134b3.crm4.dynamics.com
-  dest-env-url: https://orgd910365a.crm4.dynamics.com
+#edit your values here
+  ENVIRONMENT_URL: 'https://org792134b3.crm4.dynamics.com'
+  CLIENT_ID: '6a5754ee-a779-42e0-b97f-7e7e4ca3369d'
+  TENANT_ID: '1ba735a2-4eb2-4f59-9e8d-ebc69a922c0a'
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  ci:
-    # The type of runner that the job will run on
+  export-from-dev:
     runs-on: windows-latest
+    # or you can say runs-on: ubuntu-latest
+    env:
+      RUNNER_DEBUG: 1
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: powerplatform-actions
-        uses: microsoft/powerplatform-actions@v0.10.2
+    - uses: actions/checkout@v2
+      with:
+        lfs: true
 
-      - name: Export Solution
-        uses: microsoft/powerplatform-actions/export-solution@v0
-        with:
-          environment-url: ${{ env.ENVIRONMENT_URL }}
-          app-id: ${{ env.CLIENT_ID }}
-          client-secret: ${{ secrets.POWERPLATFORMSPN }}
-          tenant-id: ${{ env.TENANT_ID }}
-          solution-name: DemoSolution
-          solution-output-file: 'demoSolution.zip'
-          working-directory: 'out'
+    - name: who-am-i action
+      uses: microsoft/powerplatform-actions/who-am-i@v0
+      with:
+        environment-url: ${{env.ENVIRONMENT_URL}}
+        app-id: ${{env.CLIENT_ID}}
+        client-secret: ${{ secrets.PowerPlatformSPN }}
+        tenant-id: ${{env.TENANT_ID}}
 
-      - name: Unpack Solution
-        uses: microsoft/powerplatform-actions/unpack-solution@v0
-        with:
-          solution-file: 'out/demoSolution.zip'
-          solution-folder: 'out/solutions/demoSolution'
-          solution-type: 'Unmanaged'
-          overwrite-files: true
+
+    - name: export-solution action
+      uses: microsoft/powerplatform-actions/export-solution@v0
+      with:
+        environment-url: ${{env.ENVIRONMENT_URL}}
+        app-id: ${{env.CLIENT_ID}}
+        client-secret: ${{ secrets.PowerPlatformSPN }}
+        tenant-id: ${{env.TENANT_ID}}
+        solution-name: ${{ github.event.inputs.solution_name }}
+        solution-output-file: ${{ github.event.inputs.solution_exported_folder}}/${{ github.event.inputs.solution_name }}.zip
+
+    - name: unpack-solution action
+      uses: microsoft/powerplatform-actions/unpack-solution@v0
+      with:
+        solution-file: ${{ github.event.inputs.solution_exported_folder}}/${{ github.event.inputs.solution_name }}.zip
+        solution-folder: ${{ github.event.inputs.solution_folder}}/${{ github.event.inputs.solution_name }}
+        solution-type: 'Unmanaged'
+        overwrite-files: true
+
+    - name: branch-solution, prepare it for a PullRequest
+      uses: microsoft/powerplatform-actions/branch-solution@v0
+      with:
+        solution-folder: ${{ github.event.inputs.solution_folder}}/${{ github.event.inputs.solution_name }}
+        solution-target-folder: ${{ github.event.inputs.solution_target_folder}}/${{ github.event.inputs.solution_name }}
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
+        allow-empty-commit: true
 
