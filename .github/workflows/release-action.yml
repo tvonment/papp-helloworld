@@ -1,0 +1,27 @@
+name: Release action
+# Call the reusable workflow release-solution-with-inputs.yml
+# Release your solution to prod when you create a new release.
+
+on:
+  release:
+      types: [created]        
+env:
+#edit your values here
+  BUILD_ENVIRONMENT_URL: 'https://org792134b3.crm4.dynamics.com'
+  PRODUCTION_ENVIRONMENT_URL: 'https://orgd910365a.crm4.dynamics.com'
+  CLIENT_ID: '6a5754ee-a779-42e0-b97f-7e7e4ca3369d'
+  TENANT_ID: '1ba735a2-4eb2-4f59-9e8d-ebc69a922c0a'
+  
+jobs:
+  Release-solution-DemoSolution:
+    uses: ./.github/workflows/psolution-cd.yml
+    with:
+      #You can specify the solution name here
+      solution_name: DemoSolution
+      #Update your values here
+      BUILD_ENVIRONMENT_URL: ${{env.BUILD_ENVIRONMENT_URL}}
+      PRODUCTION_ENVIRONMENT_URL: ${{env.PRODUCTION_ENVIRONMENT_URL}}
+      CLIENT_ID: ${{env.CLIENT_ID}}
+      TENANT_ID: ${{env.TENANT_ID}} 
+    secrets:
+      envSecret: ${{ secrets.PowerPlatformSPN }}
