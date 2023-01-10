@@ -14,9 +14,9 @@ on:
   workflow_dispatch:
   
 env:
-  app-id: 6a5754ee-a779-42e0-b97f-7e7e4ca3369d
-  tenant-id: 1ba735a2-4eb2-4f59-9e8d-ebc69a922c0a
-  source-env-url: https://org792134b3.crm4.dynamics.com
+  CLIENT_ID: 6a5754ee-a779-42e0-b97f-7e7e4ca3369d
+  TENANT_ID: 1ba735a2-4eb2-4f59-9e8d-ebc69a922c0a
+  ENVIRONMENT_URL: https://org792134b3.crm4.dynamics.com
   dest-env-url: https://orgd910365a.crm4.dynamics.com
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
