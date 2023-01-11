@@ -34,8 +34,9 @@ jobs:
 
     - name: Get current date
       run: |
-        echo ("DATE="Get-Date -Format "ddMMyyyy-HHmm") >> $env:GITHUB_ENV
-        
+        $date=Get-Date -Format "ddMMyyyy-HHmm"
+        echo ("DATE=$date") >> $env:GITHUB_ENV
+
     - name: echo date
       run: echo ${{ env.DATE }}
 
