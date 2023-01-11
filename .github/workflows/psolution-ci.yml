@@ -58,11 +58,17 @@ jobs:
         solution-type: 'Unmanaged'
         overwrite-files: true
 
+    - name: Get current date
+      id: date
+      run: |
+        echo "{date}={$(date +'%Y-%m-%d-%H%M')}" >> $GITHUB_STATE
+
     - name: branch-solution, prepare it for a PullRequest
       uses: microsoft/powerplatform-actions/branch-solution@v0
       with:
         solution-folder: ${{ env.solution_folder}}/${{ github.event.inputs.solution_name }}
         solution-target-folder: ${{ env.solution_target_folder}}/${{ github.event.inputs.solution_name }}
+        branch-name: ${{ github.event.inputs.solution_name }}-${{env.date}}
         repo-token: ${{ secrets.PAT_TVONMENT }}
         allow-empty-commit: true
 
@@ -77,9 +83,10 @@ jobs:
         solution-output-file: ${{ env.solution_shipping_folder}}/${{ github.event.inputs.solution_name }}_managed.zip
         managed: true
 
-    - name: Upload the ready to ship solution to GH artifact store
-      uses: actions/upload-artifact@v2
-      with:
-        name: managedSolutions
-        path: ${{ env.solution_shipping_folder}}/
-
+    - name: add Solution to Repo
+      run: |
+        git fetch$
+        git checkout ${{ github.event.inputs.solution_name }}-${{env.date}}
+        git add ${{ env.solution_shipping_folder}}/${{ github.event.inputs.solution_name }}_managed.zip
+        git commit -m "add managed Solution"
+        git push ${{ github.event.inputs.solution_name }}-${{env.date}}
