@@ -18,7 +18,7 @@ env:
   solution_exported_folder: out/exported/
   solution_folder: out/solutions/
   solution_target_folder: solutions/
-
+  solution_shipping_folder: out/ship/
 
 jobs:
   export-from-dev:
@@ -65,4 +65,21 @@ jobs:
         solution-target-folder: ${{ env.solution_target_folder}}/${{ github.event.inputs.solution_name }}
         repo-token: ${{ secrets.PAT_TVONMENT }}
         allow-empty-commit: true
+
+    - name: export-managed solution action
+      uses: microsoft/powerplatform-actions/export-solution@v0
+      with:
+        environment-url: ${{env.ENVIRONMENT_URL}}
+        app-id: ${{env.CLIENT_ID}}
+        client-secret: ${{ secrets.PowerPlatformSPN }}
+        tenant-id: ${{env.TENANT_ID}}
+        solution-name: ${{ github.event.inputs.solution_name }}
+        solution-output-file: ${{ env.solution_shipping_folder}}/${{ github.event.inputs.solution_name }}_managed.zip
+        managed: true
+
+    - name: Upload the ready to ship solution to GH artifact store
+      uses: actions/upload-artifact@v2
+      with:
+        name: managedSolutions
+        path: ${{ env.solution_shipping_folder}}/
 
