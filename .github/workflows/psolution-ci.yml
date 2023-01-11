@@ -22,7 +22,7 @@ env:
 
 jobs:
   export-from-dev:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     # or you can say runs-on: ubuntu-latest
     env:
       RUNNER_DEBUG: 1
@@ -61,14 +61,15 @@ jobs:
     - name: Get current date
       id: date
       run: |
-        echo "date={$(date +'%Y-%m-%d-%H%M')}" >> $GITHUB_OUTPUT
+        echo ("DATE="$(date +'%Y-%m-%d-%H%M')) >> $env:GITHUB_ENV
+    - run: ${{ env.DATE }}
 
     - name: branch-solution, prepare it for a PullRequest
       uses: microsoft/powerplatform-actions/branch-solution@v0
       with:
         solution-folder: ${{ env.solution_folder}}/${{ github.event.inputs.solution_name }}
         solution-target-folder: ${{ env.solution_target_folder}}/${{ github.event.inputs.solution_name }}
-        branch-name: ${{ github.event.inputs.solution_name }}-${{ steps.date.outputs.date }}
+        branch-name: ${{ github.event.inputs.solution_name }}-${{ env.DATE }}
         repo-token: ${{ secrets.PAT_TVONMENT }}
         allow-empty-commit: true
 
@@ -88,7 +89,7 @@ jobs:
         git fetch
         git config --global user.email thvome@gmail.com
         git config --global user.name tvonment
-        git checkout ${{ github.event.inputs.solution_name }}-${{ steps.date.outputs.date }}
+        git checkout ${{ github.event.inputs.solution_name }}-${{ env.DATE }}
         git add ${{ env.solution_shipping_folder}}/${{ github.event.inputs.solution_name }}_managed.zip
         git commit -m "add managed Solution"
-        git push origin ${{ github.event.inputs.solution_name }}-${{ steps.date.outputs.date }}
+        git push origin ${{ github.event.inputs.solution_name }}-${{ env.DATE }}
