@@ -81,6 +81,23 @@
       <RootComponent type="29" id="{4f43350e-e390-ed11-aad1-002248829113}" behavior="0" />
       <RootComponent type="300" schemaName="tvm_myapp001_e34a9" behavior="0" />
     </RootComponents>
-    <MissingDependencies />
+    <MissingDependencies>
+      <MissingDependency>
+        <Required type="connectionreference" displayName="tvm_SPOConnection" solution="Active" id.connectionreferencelogicalname="tvm_SPOConnection" />
+        <Dependent type="29" displayName="AddSPOItem" id="{4f43350e-e390-ed11-aad1-002248829113}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="EnvironmentVariableDefinition" displayName="tvm_SPOList" solution="Active" id.schemaname="tvm_SPOList" />
+        <Dependent type="29" displayName="AddSPOItem" id="{4f43350e-e390-ed11-aad1-002248829113}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="EnvironmentVariableDefinition" displayName="tvm_SPOSite" solution="Active" id.schemaname="tvm_SPOSite" />
+        <Dependent type="29" displayName="AddSPOItem" id="{4f43350e-e390-ed11-aad1-002248829113}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="EnvironmentVariableDefinition" displayName="tvm_SPOSite" solution="Active" id.schemaname="tvm_SPOSite" />
+        <Dependent type="300" schemaName="tvm_myapp001_e34a9" displayName="myApp001" />
+      </MissingDependency>
+    </MissingDependencies>
   </SolutionManifest>
 </ImportExportXml>
