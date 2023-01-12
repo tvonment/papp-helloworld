@@ -93,3 +93,4 @@ jobs:
       uses: Andro999b/push@v1.3
       with:
         github_token: ${{ secrets.PAT_TVONMENT }}
+        branch: ${{ inputs.solution_name }}-${{ env.DATE }}
