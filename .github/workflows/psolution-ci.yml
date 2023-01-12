@@ -18,7 +18,7 @@ env:
   solution_exported_folder: out/exported/
   solution_folder: out/solutions/
   solution_target_folder: solutions/
-  solution_shipping_folder: out/ship/
+  solution_shipping_folder: solutions/
 
 jobs:
   export-from-dev:
