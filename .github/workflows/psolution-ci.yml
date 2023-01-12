@@ -72,6 +72,11 @@ jobs:
         repo-token: ${{ secrets.PAT_TVONMENT }}
         allow-empty-commit: true
 
+    - uses: actions/checkout@${{ github.event.inputs.solution_name }}-${{ env.DATE }}
+      with:
+        persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
+        fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
+
     - name: export-managed solution action
       uses: microsoft/powerplatform-actions/export-solution@v0
       with:
@@ -83,12 +88,7 @@ jobs:
         solution-output-file: ${{ env.solution_shipping_folder}}/${{ github.event.inputs.solution_name }}_managed.zip
         managed: true
 
-    - name: add Solution to Repo
-      run: |
-        git fetch
-        git config --global user.email thvome@gmail.com
-        git config --global user.name tvonment
-        git checkout ${{ github.event.inputs.solution_name }}-${{ env.DATE }}
-        git add ${{ env.solution_shipping_folder}}/${{ github.event.inputs.solution_name }}_managed.zip
-        git commit -m "add managed Solution"
-        git push https://${{ secrets.PAT_TVONMENT }}@github.com/tvonment/papp-helloworld
+    - name: Commit & Push changes
+      uses: Andro999b/push@v1.3
+      with:
+        github_token: ${{ secrets.PAT_TVONMENT }}
