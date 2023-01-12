@@ -37,3 +37,4 @@ jobs:
         solution-file: ${{ env.solution_release_folder}}/${{ inputs.solution_name }}_managed.zip
         force-overwrite: true
         publish-changes: true
+        convert-to-managed: true
