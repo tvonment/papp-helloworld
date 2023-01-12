@@ -18,7 +18,6 @@ env:
   solution_exported_folder: out/exported/
   solution_folder: out/solutions/
   solution_target_folder: solutions/
-  solution_shipping_folder: solutions/
 
 jobs:
   export-from-dev:
@@ -78,6 +77,8 @@ jobs:
         persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
         fetch-depth: 0 # otherwise, you will failed to push refs to dest repo
 
+    - run: rm ${{ env.solution_target_folder}}/${{ github.event.inputs.solution_name }}_managed.zip
+
     - name: export-managed solution action
       uses: microsoft/powerplatform-actions/export-solution@v0
       with:
@@ -86,7 +87,7 @@ jobs:
         client-secret: ${{ secrets.PowerPlatformSPN }}
         tenant-id: ${{env.TENANT_ID}}
         solution-name: ${{ github.event.inputs.solution_name }}
-        solution-output-file: ${{ env.solution_shipping_folder}}/${{ github.event.inputs.solution_name }}_managed.zip
+        solution-output-file: ${{ env.solution_target_folder}}/${{ github.event.inputs.solution_name }}_managed.zip
         managed: true
 
     - name: Commit & Push changes
